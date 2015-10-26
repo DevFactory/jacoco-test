@@ -1,0 +1,63 @@
+<project xmlns:jacoco="antlib:org.jacoco.ant">
+    <property name="lib.dir" value="lib"/>
+
+    <path id="classpath">
+        <fileset dir="${lib.dir}" includes="**/*.jar"/>
+    </path>
+
+    <target name="clean">
+        <delete dir="build"/>
+    </target>
+
+    <target name="compile">
+        <mkdir dir="build/classes"/>
+        <javac srcdir="src" destdir="build/classes">
+            <classpath>
+                <path refid="classpath"/>
+            </classpath>
+        </javac>
+    </target>
+
+    <target name="tests_compile" depends="compile">
+        <mkdir dir="build/tests"/>
+        <javac srcdir="tests" destdir="build/tests">
+            <classpath>
+                <path refid="classpath"/>
+                <path location="build/classes"/>
+            </classpath>
+        </javac>
+    </target>
+    <target name="junit" depends="tests_compile">
+        <jacoco:coverage destfile="jacoco.exec" excludes="test.Class1Test">
+            <junit fork="true" forkmode="once" showoutput="true">
+                <test name="test.Class1Test"/>
+                <formatter usefile="false" type="plain"/>
+                <classpath>
+                    <path refid="classpath"/>
+                    <path location="build/classes"/>
+                    <path location="build/tests"/>
+                </classpath>
+            </junit>
+        </jacoco:coverage>
+    </target>
+    <target name="report" depends="junit">
+        <jacoco:report>
+
+            <executiondata>
+                <file file="jacoco.exec"/>
+            </executiondata>
+
+            <structure name="Example Project">
+                <classfiles>
+                    <fileset dir="build/classes"/>
+                </classfiles>
+                <sourcefiles encoding="UTF-8">
+                    <fileset dir="src"/>
+                </sourcefiles>
+            </structure>
+
+            <html destdir="report"/>
+
+        </jacoco:report>
+    </target>
+</project>
