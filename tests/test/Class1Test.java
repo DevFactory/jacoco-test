@@ -17,9 +17,8 @@ public class Class1Test {
     @Test
     public void testMethod1WithPowermock() {
         mockStatic(Class2.class);
-        when(Class2.getString()).thenReturn("123");
-        final int actual = new Class1().method1();
-        assertEquals(3,actual);
+        when(Class2.getString()).thenThrow(new RuntimeException());
+        new Class1().method1();
     }
 
 }
